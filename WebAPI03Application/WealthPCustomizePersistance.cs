@@ -25,6 +25,17 @@ namespace WebAPI03Application
 {
     public class WealthPCustomizePersistance
     {
+        public static double GetStandardDev(List<double> list)
+        {
+            double stdev = 0;
+            if(list.Count != 0)
+            {
+                double average = list.Average();
+                stdev = Math.Sqrt((list.Sum(x => Math.Pow(x - average,2))) / (list.Count() ) );
+            }
+
+            return stdev;
+        }
 
         public ArrayList getWealthPCustomize(CWeight[] cweight)
         {
@@ -182,7 +193,8 @@ namespace WebAPI03Application
 
                     foreach (var item in cweight.OrderBy(t => t.PortCode))
                     {
-                        A[0, i] = (mySQLReader.GetValue(mySQLReader.GetOrdinal(item.PortCode)).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode)) / 100 + 1) * tmp[0, i];
+                        //A[0, i] = (mySQLReader.GetValue(mySQLReader.GetOrdinal(item.PortCode)).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode)) / 100 + 1) * tmp[0, i];
+                        A[0, i] = (mySQLReader.GetValue(mySQLReader.GetOrdinal(item.PortCode)).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode)) + 1) * tmp[0, i];
                         tmp[0, i] = A[0, i];
                         tmp_money += tmp[0, i];
                         i++;
@@ -203,9 +215,25 @@ namespace WebAPI03Application
                     retList.Add(ret);
                     //test += tmp_sd.ToString() + "==";
                 }   // end while
+                mySQLReader.Close();
+
+                //-------------Return
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "SP_FindWorkingDay";
+                command.Parameters.Clear();
+                command.Parameters.AddWithValue("@dt", sDt.ToString("dd/MM/yyy", CultureInfo.CreateSpecificCulture("en-US")));
+                mySQLReader = command.ExecuteReader();
+
+                while (mySQLReader.Read())
+                {
+                    sDt = mySQLReader.GetDateTime(mySQLReader.GetOrdinal("DT1"));
+                }
+                mySQLReader.Close();
+                //-------------Return
 
                 //yr = Convert.ToInt32(Math.Floor(eDt.Subtract(sDt).TotalDays / 365));
-                yr = Math.Ceiling(eDt.Subtract(sDt).TotalDays / 366);
+                //yr = Math.Ceiling(eDt.Subtract(sDt).TotalDays / 365);
+                yr = eDt.Subtract(sDt).TotalDays / 365;
                 pow = 1 / yr;
                 //yr = eDt.ToString("yyy-MM-dd", CultureInfo.CreateSpecificCulture("en-US"));
 
@@ -236,7 +264,10 @@ namespace WebAPI03Application
                 // 1/12 = 0.08333333333333333333333333333333
                 wpc.RET = (double)(Math.Pow(sd, pow) - 1 ) * 100;
                 wpc.SD = Math.Round(statistics.StandardDeviation * Math.Sqrt(252) * 100, 4);
-                wpc.XX = yr.ToString();
+                //var statistics2 = retList.PopulationStandardDeviation();
+                //wpc.SD = GetStandardDev(retList);
+                //wpc.XX = yr.ToString();
+                wpc.XX = retList.Average().ToString() + (retList.Sum()/62).ToString() + "___" + retList.Count.ToString() + "___" + yr.ToString();
                 //(long)Math.Pow(value, power)
                 //wpc.RET = (double)Math.Pow(2.16412, 0.1)-1 ;
                 //wpc.RET = A[0, 0].ToString() + "**" + A[0, 1].ToString() + "**" + A[0, 2].ToString() + "**" + A[0, 3].ToString() + "**" + A[0, 4].ToString();//money.ToString();
@@ -255,7 +286,7 @@ namespace WebAPI03Application
             }
             finally
             {
-                mySQLReader.Close();
+                //mySQLReader.Close();
                 conn.Close();
             }
         }
