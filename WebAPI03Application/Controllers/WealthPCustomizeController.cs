@@ -9,8 +9,12 @@ using System.Globalization;
 using System.Collections;
 using WebAPI03Application.Models;
 
+using System.Web.Http.Cors;
+
 namespace WebAPI03Application.Controllers
 {
+    [EnableCors(origins: "http://localhost", headers: "*", methods: "*")]
+
     [RoutePrefix("api/WealthPCustomize")]
 
     public class WealthPCustomizeController : ApiController
@@ -32,7 +36,7 @@ namespace WebAPI03Application.Controllers
         //[Route("{navDate}")]
         //public ArrayList Get(string navDate)
         //public ArrayList Post([FromBody]string cweight)
-        public ArrayList Post([FromBody]CWeight[] cweight)
+        public WealthPCustomize Post([FromBody]CWeight[] cweight)
         {
             WealthPCustomizePersistance wpc = new WealthPCustomizePersistance();
             if (wpc == null)

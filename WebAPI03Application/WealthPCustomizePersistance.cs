@@ -19,6 +19,8 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.Statistics;
 
 using System.Web.Script.Serialization;
+using System.Net.Http;
+using System.Net;
 
 
 namespace WebAPI03Application
@@ -37,12 +39,13 @@ namespace WebAPI03Application
             return stdev;
         }
 
-        public ArrayList getWealthPCustomize(CWeight[] cweight)
+        //public ArrayList getWealthPCustomize(CWeight[] cweight)
+        public WealthPCustomize getWealthPCustomize(CWeight[] cweight)
         {
             //var jss = new JavaScriptSerializer();
             //var results = jss.Deserialize<CWeight>(cweight);
             //Dictionary<string, double> results = jss.Deserialize<Dictionary<string, double>>(cweight);
-            
+
 
             //double _lenght = results .Count;
 
@@ -52,13 +55,83 @@ namespace WebAPI03Application
             conn = new MySql.Data.MySqlClient.MySqlConnection();
             */
 
+            ArrayList WealthPCustomizeArray = new ArrayList();
+
             OleDbConnection conn = null;
             OleDbCommand command = null;
             OleDbDataReader mySQLReader = null;
 
+
             try
             {
+                WealthPCustomize wpc = new WealthPCustomize();
+
+                List<string> check_port = new List<string>(new string[] { "BFIXED", "BKA", "REIT", "B-GLOBAL", "BGOLD" });
+
+                if (cweight.Count() == 0)
+                {
+                    wpc.RET = null;
+                    wpc.SD = null;
+                    wpc.STATUS = "Error : Value can not be null.";
+                    //wpc.XX = cweight.Count().ToString() + "_00_" + cweight.Length.ToString();
+
+                    WealthPCustomizeArray.Add(wpc);
+
+                    return wpc;
+                }
+
+                double check_weight = 0;
+                foreach (var item in cweight.OrderBy(t => t.PortCode))
+                {
+                    if (!check_port.Any(c => c.Equals(item.PortCode, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        wpc.RET = null;
+                        wpc.SD = null;
+                        wpc.STATUS = "Error : Can not find port '" + item.PortCode + "'.";
+                        //wpc.XX = cweight.Count().ToString() + "_00_" + cweight.Length.ToString();
+
+                        WealthPCustomizeArray.Add(wpc);
+
+                        return wpc;
+                    }
+                    else
+                    {
+                        check_weight += item.Weight;
+                    }
+                }
+
+                if (check_weight != 100)
+                {
+                    wpc.RET = null;
+                    wpc.SD = null;
+                    wpc.STATUS = "Error : Weight not equal 100.";
+                    //wpc.XX = cweight.Count().ToString() + "_00_" + cweight.Length.ToString();
+
+                    WealthPCustomizeArray.Add(wpc);
+
+                    return wpc;
+                }
+
+                /*
+                foreach (var item in cweight.OrderBy(t => t.PortCode))
+                {
+                    if (item.Weight.Equals(null))
+                    {
+                        WealthPCustomize wpc2 = new WealthPCustomize();
+                        wpc2.RET = 0.0;
+                        wpc2.SD = 0.0;
+                        wpc2.XX = cweight.Count().ToString();
+
+                        WealthPCustomizeArray.Add(wpc2);
+
+                        return WealthPCustomizeArray;
+                    }
+                }
+                */
+
                 int dim = cweight.Count();
+                //throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound));
+
                 double money = 1000000;
                 double tmp_money = 0;
                 double tmp_sd = 1;
@@ -125,8 +198,6 @@ namespace WebAPI03Application
                 command.Parameters.AddWithValue("@port", string.Join(",", _port));
                 mySQLReader = command.ExecuteReader();
 
-
-                ArrayList WealthPCustomizeArray = new ArrayList();
                 /*
                 MySql.Data.MySqlClient.MySqlDataReader mySQLReader = null;
 
@@ -259,15 +330,16 @@ namespace WebAPI03Application
                 Matrix<double> C = B.Multiply(A.Multiply(Bt));
                 double sd = Math.Round(Math.Sqrt(C.Trace()), 2);
                 */
-                WealthPCustomize wpc = new WealthPCustomize();
+                //WealthPCustomize wpc = new WealthPCustomize();
                 //wpc.SD = A[0,0];
                 // 1/12 = 0.08333333333333333333333333333333
-                wpc.RET = (double)(Math.Pow(sd, pow) - 1 ) * 100;
-                wpc.SD = Math.Round(statistics.StandardDeviation * Math.Sqrt(252) * 100, 4);
+                wpc.RET = Math.Round((double)(Math.Pow(sd, pow) - 1 ) * 100, 2);
+                wpc.SD = Math.Round(statistics.StandardDeviation * Math.Sqrt(252) * 100, 2);
                 //var statistics2 = retList.PopulationStandardDeviation();
                 //wpc.SD = GetStandardDev(retList);
                 //wpc.XX = yr.ToString();
-                wpc.XX = retList.Average().ToString() + (retList.Sum()/62).ToString() + "___" + retList.Count.ToString() + "___" + yr.ToString();
+                wpc.STATUS = "Success";
+                //wpc.XX = retList.Average().ToString() + (retList.Sum()/62).ToString() + "___" + retList.Count.ToString() + "___" + yr.ToString();
                 //(long)Math.Pow(value, power)
                 //wpc.RET = (double)Math.Pow(2.16412, 0.1)-1 ;
                 //wpc.RET = A[0, 0].ToString() + "**" + A[0, 1].ToString() + "**" + A[0, 2].ToString() + "**" + A[0, 3].ToString() + "**" + A[0, 4].ToString();//money.ToString();
@@ -277,8 +349,9 @@ namespace WebAPI03Application
                 //wpc.FUND_CODE = _port2;
 
                 WealthPCustomizeArray.Add(wpc);
-                
-                return WealthPCustomizeArray;
+
+                //return WealthPCustomizeArray;
+                return wpc;
             }
             catch (MySql.Data.MySqlClient.MySqlException ex)
             {
@@ -286,8 +359,14 @@ namespace WebAPI03Application
             }
             finally
             {
-                //mySQLReader.Close();
-                conn.Close();
+                if (mySQLReader != null)
+                {
+                    mySQLReader.Close();
+                }
+                if (conn != null)
+                {
+                    conn.Close();
+                }
             }
         }
     }

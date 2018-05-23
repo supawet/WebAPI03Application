@@ -11,13 +11,17 @@ namespace WebAPI03Application
         {
             // Web API configuration and services
 
+            // New code
+            config.EnableCors();
+
             // Web API routes
             config.MapHttpAttributeRoutes();
 
             // Asset Allocate route
             config.Routes.MapHttpRoute(
                 name: "WealthPCustomize",
-                routeTemplate: "api/WealthPCustomize/{id}",
+                //routeTemplate: "api/WealthPCustomize/{id}",
+                routeTemplate: "api/WealthPCustomize",
                 defaults: new { controller = "WealthPCustomize", id = RouteParameter.Optional }//,
                 //constraints: new { id="length(2)"}
                                );
