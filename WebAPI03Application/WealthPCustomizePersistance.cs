@@ -264,8 +264,8 @@ namespace WebAPI03Application
 
                     foreach (var item in cweight.OrderBy(t => t.PortCode))
                     {
-                        //A[0, i] = (mySQLReader.GetValue(mySQLReader.GetOrdinal(item.PortCode)).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode)) / 100 + 1) * tmp[0, i];
-                        A[0, i] = (mySQLReader.GetValue(mySQLReader.GetOrdinal(item.PortCode)).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode)) + 1) * tmp[0, i];
+                        A[0, i] = (mySQLReader.GetValue(mySQLReader.GetOrdinal(item.PortCode)).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode)) / 100 + 1) * tmp[0, i];
+                        //A[0, i] = (mySQLReader.GetValue(mySQLReader.GetOrdinal(item.PortCode)).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode)) + 1) * tmp[0, i];
                         tmp[0, i] = A[0, i];
                         tmp_money += tmp[0, i];
                         i++;
@@ -333,8 +333,12 @@ namespace WebAPI03Application
                 //WealthPCustomize wpc = new WealthPCustomize();
                 //wpc.SD = A[0,0];
                 // 1/12 = 0.08333333333333333333333333333333
+                /*
                 wpc.RET = Math.Round((double)(Math.Pow(sd, pow) - 1 ) * 100, 2);
                 wpc.SD = Math.Round(statistics.StandardDeviation * Math.Sqrt(252) * 100, 2);
+                */
+                wpc.RET = (double)(Math.Pow(sd, pow) - 1) ;
+                wpc.SD = statistics.StandardDeviation * Math.Sqrt(252);
                 //var statistics2 = retList.PopulationStandardDeviation();
                 //wpc.SD = GetStandardDev(retList);
                 //wpc.XX = yr.ToString();
