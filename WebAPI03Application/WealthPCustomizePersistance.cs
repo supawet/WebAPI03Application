@@ -66,7 +66,9 @@ namespace WebAPI03Application
             {
                 WealthPCustomize wpc = new WealthPCustomize();
 
-                List<string> check_port = new List<string>(new string[] { "BFIXED", "BKA", "REIT", "B-GLOBAL", "BGOLD" });
+                List<string> check_port = new List<string>(new string[] { "BFIXED", "BKA", "REIT", "B-GLOBAL", "BGOLD", "B-TREASURY"
+                , "B-TNTV", "BKD", "BCAP", "BBASIC", "B-INFRA", "BTK", "BTP", "B-ASEAN"
+                , "B-HY (H75)", "B-HY (UH)", "B-NIPPON", "B-BHARATA", "B-ASIA", "BCARE", "B-INNOTECH" });
 
                 if (cweight.Count() == 0)
                 {
