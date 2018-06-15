@@ -66,9 +66,9 @@ namespace WebAPI03Application
             {
                 WealthPCustomize wpc = new WealthPCustomize();
 
-                List<string> check_port = new List<string>(new string[] { "BFIXED", "BKA", "REIT", "B-GLOBAL", "BGOLD", "B-TREASURY"
+                List<string> check_port = new List<string>(new string[] { "BFIXED", "BKA", "BKA2", "REIT", "B-GLOBAL", "BGOLD", "B-TREASURY"
                 , "B-TNTV", "BKD", "BCAP", "BBASIC", "B-INFRA", "BTK", "BTP", "B-ASEAN"
-                , "B-HY (H75)", "B-HY (UH)", "B-NIPPON", "B-BHARATA", "B-ASIA", "BCARE", "B-INNOTECH" });
+                , "B-HY (H75) AI", "B-HY (UH) AI", "B-NIPPON", "B-BHARATA", "B-ASIA", "BCARE", "B-INNOTECH" });
 
                 if (cweight.Count() == 0)
                 {
@@ -152,6 +152,7 @@ namespace WebAPI03Application
                 int j = 0;
                 double yr;
                 double pow;
+
                 foreach (var item in cweight.OrderBy(t => t.PortCode))
                 {
                     _port.Add(item.PortCode);
@@ -220,6 +221,8 @@ namespace WebAPI03Application
                     wpc.UPDATED_DATE = mySQLReader.GetValue(mySQLReader.GetOrdinal("VDATE")).Equals(DBNull.Value) ? null : mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).ToString("yyy-MM-dd", CultureInfo.CreateSpecificCulture("en-US"));
                 */
                 j = 0;
+                string test = "";
+                int jj = 0;
                 while (mySQLReader.Read())
                 {
                     if (j == 0)
@@ -231,12 +234,14 @@ namespace WebAPI03Application
                     {
                         eDt = mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE"));
                     }
-
+                    jj++;
                     //_port2 = mySQLReader.GetValue(mySQLReader.GetOrdinal("Cov1")).Equals(DBNull.Value) ? null : mySQLReader.GetString(mySQLReader.GetOrdinal("Cov1"));
                     //A[i, j] = mySQLReader.GetValue(mySQLReader.GetOrdinal("Covv")).Equals(DBNull.Value) ? 0 : (double)mySQLReader.GetDecimal(mySQLReader.GetOrdinal("Covv"));
                     //A[i,j] = mySQLReader.GetValue(mySQLReader.GetOrdinal("Covv")).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal("Covv"));
                     if (rbDateArray.Contains(mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).ToString("yyy-MM-dd", CultureInfo.CreateSpecificCulture("en-US"))))
                     {
+                        //if(jj == 1) test = mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).ToString("yyy-MM-dd", CultureInfo.CreateSpecificCulture("en-US"));
+                        //test = "doraemon";
                         money = 0;
                         i = 0;
                         foreach (var item in cweight.OrderBy(t => t.PortCode))
@@ -266,8 +271,8 @@ namespace WebAPI03Application
 
                     foreach (var item in cweight.OrderBy(t => t.PortCode))
                     {
-                        A[0, i] = (mySQLReader.GetValue(mySQLReader.GetOrdinal(item.PortCode)).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode)) / 100 + 1) * tmp[0, i];
-                        //A[0, i] = (mySQLReader.GetValue(mySQLReader.GetOrdinal(item.PortCode)).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode)) + 1) * tmp[0, i];
+                        //A[0, i] = (mySQLReader.GetValue(mySQLReader.GetOrdinal(item.PortCode)).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode)) / 100 + 1) * tmp[0, i];  //mix ใช้ได้
+                        A[0, i] = (mySQLReader.GetValue(mySQLReader.GetOrdinal(item.PortCode)).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode)) + 1) * tmp[0, i];      // เดี่ยวใช้ได้
                         tmp[0, i] = A[0, i];
                         tmp_money += tmp[0, i];
                         i++;
@@ -281,12 +286,15 @@ namespace WebAPI03Application
                         ret = tmp_money / ret - 1;
                     }
                     */
-                    ret = tmp_money / money - 1;
+                    ret = (tmp_money / money) - 1;
+
                     money = tmp_money;
+                    //if (jj == 1) test = tmp_money.ToString();
+                    //test = ret.ToString();
                     sd = (ret + 1)*tmp_sd;
                     tmp_sd = sd;
                     retList.Add(ret);
-                    //test += tmp_sd.ToString() + "==";
+                    test += tmp_sd.ToString() + "==";
                 }   // end while
                 mySQLReader.Close();
 
@@ -339,12 +347,15 @@ namespace WebAPI03Application
                 wpc.RET = Math.Round((double)(Math.Pow(sd, pow) - 1 ) * 100, 2);
                 wpc.SD = Math.Round(statistics.StandardDeviation * Math.Sqrt(252) * 100, 2);
                 */
-                wpc.RET = (double)(Math.Pow(sd, pow) - 1) ;
+                //wpc.RET = (double)(Math.Pow(sd, pow) - 1) ;
+                wpc.RET = (double)(Math.Pow(sd, pow) - 1);
                 wpc.SD = statistics.StandardDeviation * Math.Sqrt(252);
                 //var statistics2 = retList.PopulationStandardDeviation();
                 //wpc.SD = GetStandardDev(retList);
                 //wpc.XX = yr.ToString();
                 wpc.STATUS = "Success";
+                //wpc.XX = test;
+                //wpc.XX = pow.ToString() + "__" + sd.ToString() + "__" + yr.ToString();
                 //wpc.XX = retList.Average().ToString() + (retList.Sum()/62).ToString() + "___" + retList.Count.ToString() + "___" + yr.ToString();
                 //(long)Math.Pow(value, power)
                 //wpc.RET = (double)Math.Pow(2.16412, 0.1)-1 ;

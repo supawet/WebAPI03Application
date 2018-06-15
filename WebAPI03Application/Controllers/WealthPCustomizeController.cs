@@ -13,7 +13,8 @@ using System.Web.Http.Cors;
 
 namespace WebAPI03Application.Controllers
 {
-    [EnableCors(origins: "http://localhost", headers: "*", methods: "*")]
+    //[EnableCors(origins: "http://localhost", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
 
     [RoutePrefix("api/WealthPCustomize")]
 
