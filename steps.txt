@@ -1,0 +1,18 @@
+﻿1. select * into [Measurement] from [LKDBAZURE].[bblamapidb].[dbo].[Measurement]  ** ตัวนี้อาจจะนำมาจาก excel ไฟล์
+2. select * into ReBalanceDate from [LKDBAZURE].[bblamapidb].[dbo].ReBalanceDate
+3. select * into azure_hiport_holiday from [LKDBAZURE].[bblamapidb].[dbo].azure_hiport_holiday
+4. แก้วันที่ใน SP_TransformToReBalanceDate และ SP_TransformToMeasurementMatrix
+5.
+USE [bblamapidb]
+GO
+DECLARE	@return_value int
+EXEC	@return_value = [dbo].[SP_TransformToReBalanceDate]
+SELECT	'Return Value' = @return_value
+GO
+
+USE [bblamapidb]
+GO
+DECLARE	@return_value int
+EXEC	@return_value = [dbo].[SP_TransformToMeasurementMatrix]
+SELECT	'Return Value' = @return_value
+GO
