@@ -18,6 +18,15 @@ namespace WebAPI03Application
             config.MapHttpAttributeRoutes();
 
             // Asset Allocate route
+
+            config.Routes.MapHttpRoute(
+                name: "WealthPCustomize",
+                //routeTemplate: "api/WealthPCustomize/{id}",
+                routeTemplate: "api/WealthPCustomize",
+                defaults: new { controller = "WealthPCustomize2", id = RouteParameter.Optional }//,
+                //constraints: new { id="length(2)"}
+            );
+            /*
             config.Routes.MapHttpRoute(
                 name: "WealthPCustomize",
                 //routeTemplate: "api/WealthPCustomize/{id}",
@@ -33,6 +42,7 @@ namespace WebAPI03Application
                 defaults: new { controller = "WealthPCustomize2", id = RouteParameter.Optional }//,
                 //constraints: new { id="length(2)"}
             );
+            */
 
         }
     }

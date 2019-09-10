@@ -66,9 +66,7 @@ namespace WebAPI03Application
             {
                 WealthPCustomize wpc = new WealthPCustomize();
 
-                List<string> check_port = new List<string>(new string[] { "BFIXED", "BKA", "BKA2", "REIT", "B-GLOBAL", "BGOLD", "B-TREASURY"
-                , "B-TNTV", "BKD", "BCAP", "BBASIC", "B-INFRA", "BTK", "BTP", "B-ASEAN"
-                , "B-HY (H75) AI", "B-HY (UH) AI", "B-NIPPON", "B-BHARATA", "B-ASIA", "BCARE", "B-INNOTECH" });
+                List<string> check_port = new List<string>(new string[] { "BFIXED", "BKA", "BKA2", "REIT", "B-GLOBAL", "BGOLD", "B-TREASURY", "B-TNTV", "BKD", "BCAP", "BBASIC", "B-INFRA", "BTK", "BTP", "B-ASEAN", "B-HY (H75) AI", "B-HY (UH) AI", "B-NIPPON", "B-BHARATA", "B-ASIA", "BCARE", "B-INNOTECH" });
 
                 if (cweight.Count() == 0)
                 {
@@ -134,10 +132,6 @@ namespace WebAPI03Application
                 int dim = cweight.Count();
                 //throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound));
 
-                double money = 1000000;
-                double tmp_money = 0;
-                double tmp_sd = 1;
-
                 Matrix<double> A = DenseMatrix.OfArray(new double[1, dim]);
                 //Matrix<double> tmp = DenseMatrix.OfArray(new double[1, dim]);
 
@@ -147,7 +141,7 @@ namespace WebAPI03Application
                 double multi_asset_end = 0;
                 double tmp = 0;
                 double div = 0;
-                double tt = 0;
+
                 Matrix<double> tmp_weight = DenseMatrix.OfArray(new double[1, dim]);
                 Matrix<double> tmp_index = DenseMatrix.OfArray(new double[1, dim]);
                 Matrix<double> tmp_index_old = DenseMatrix.OfArray(new double[1, dim]);
@@ -157,15 +151,139 @@ namespace WebAPI03Application
                 DateTime sDt = new DateTime();
                 DateTime eDt = new DateTime();
 
-                double assetMonth = 0; //  return ของเดือน
                 //  วันทำการสิ้นเดือน  เพื่อหา monthly return
                 List<DateTime> eMonth = new List<DateTime>();
+                eMonth.Add(new DateTime(2005, 12, 31));
+                eMonth.Add(new DateTime(2006, 01, 31));
+                eMonth.Add(new DateTime(2006, 02, 28));
+                eMonth.Add(new DateTime(2006, 03, 31));
+                eMonth.Add(new DateTime(2006, 04, 30));
+                eMonth.Add(new DateTime(2006, 05, 31));
+                eMonth.Add(new DateTime(2006, 06, 30));
+                eMonth.Add(new DateTime(2006, 07, 31));
+                eMonth.Add(new DateTime(2006, 08, 31));
+                eMonth.Add(new DateTime(2006, 09, 30));
+                eMonth.Add(new DateTime(2006, 10, 31));
+                eMonth.Add(new DateTime(2006, 11, 30));
+                eMonth.Add(new DateTime(2006, 12, 31));
+                eMonth.Add(new DateTime(2007, 01, 31));
+                eMonth.Add(new DateTime(2007, 02, 28));
+                eMonth.Add(new DateTime(2007, 03, 31));
+                eMonth.Add(new DateTime(2007, 04, 30));
+                eMonth.Add(new DateTime(2007, 05, 31));
+                eMonth.Add(new DateTime(2007, 06, 30));
+                eMonth.Add(new DateTime(2007, 07, 31));
+                eMonth.Add(new DateTime(2007, 08, 31));
+                eMonth.Add(new DateTime(2007, 09, 30));
+                eMonth.Add(new DateTime(2007, 10, 31));
+                eMonth.Add(new DateTime(2007, 11, 30));
+                eMonth.Add(new DateTime(2007, 12, 31));
+                eMonth.Add(new DateTime(2008, 01, 31));
+                eMonth.Add(new DateTime(2008, 02, 29));
+                eMonth.Add(new DateTime(2008, 03, 31));
+                eMonth.Add(new DateTime(2008, 04, 30));
+                eMonth.Add(new DateTime(2008, 05, 31));
+                eMonth.Add(new DateTime(2008, 06, 30));
+                eMonth.Add(new DateTime(2008, 07, 31));
+                eMonth.Add(new DateTime(2008, 08, 31));
+                eMonth.Add(new DateTime(2008, 09, 30));
+                eMonth.Add(new DateTime(2008, 10, 31));
+                eMonth.Add(new DateTime(2008, 11, 30));
+                eMonth.Add(new DateTime(2008, 12, 31));
+                eMonth.Add(new DateTime(2009, 01, 31));
+                eMonth.Add(new DateTime(2009, 02, 28));
+                eMonth.Add(new DateTime(2009, 03, 31));
+                eMonth.Add(new DateTime(2009, 04, 30));
+                eMonth.Add(new DateTime(2009, 05, 31));
+                eMonth.Add(new DateTime(2009, 06, 30));
+                eMonth.Add(new DateTime(2009, 07, 31));
+                eMonth.Add(new DateTime(2009, 08, 31));
+                eMonth.Add(new DateTime(2009, 09, 30));
+                eMonth.Add(new DateTime(2009, 10, 31));
+                eMonth.Add(new DateTime(2009, 11, 30));
+                eMonth.Add(new DateTime(2009, 12, 31));
+                eMonth.Add(new DateTime(2010, 01, 31));
+                eMonth.Add(new DateTime(2010, 02, 28));
+                eMonth.Add(new DateTime(2010, 03, 31));
+                eMonth.Add(new DateTime(2010, 04, 30));
+                eMonth.Add(new DateTime(2010, 05, 31));
+                eMonth.Add(new DateTime(2010, 06, 30));
+                eMonth.Add(new DateTime(2010, 07, 31));
+                eMonth.Add(new DateTime(2010, 08, 31));
+                eMonth.Add(new DateTime(2010, 09, 30));
+                eMonth.Add(new DateTime(2010, 10, 31));
+                eMonth.Add(new DateTime(2010, 11, 30));
+                eMonth.Add(new DateTime(2010, 12, 31));
+                eMonth.Add(new DateTime(2011, 01, 31));
+                eMonth.Add(new DateTime(2011, 02, 28));
+                eMonth.Add(new DateTime(2011, 03, 31));
+                eMonth.Add(new DateTime(2011, 04, 30));
+                eMonth.Add(new DateTime(2011, 05, 31));
+                eMonth.Add(new DateTime(2011, 06, 30));
+                eMonth.Add(new DateTime(2011, 07, 31));
+                eMonth.Add(new DateTime(2011, 08, 31));
+                eMonth.Add(new DateTime(2011, 09, 30));
+                eMonth.Add(new DateTime(2011, 10, 31));
+                eMonth.Add(new DateTime(2011, 11, 30));
+                eMonth.Add(new DateTime(2011, 12, 31));
+                eMonth.Add(new DateTime(2012, 01, 31));
+                eMonth.Add(new DateTime(2012, 02, 29));
+                eMonth.Add(new DateTime(2012, 03, 31));
+                eMonth.Add(new DateTime(2012, 04, 30));
+                eMonth.Add(new DateTime(2012, 05, 31));
+                eMonth.Add(new DateTime(2012, 06, 30));
+                eMonth.Add(new DateTime(2012, 07, 31));
+                eMonth.Add(new DateTime(2012, 08, 31));
+                eMonth.Add(new DateTime(2012, 09, 30));
+                eMonth.Add(new DateTime(2012, 10, 31));
+                eMonth.Add(new DateTime(2012, 11, 30));
+                eMonth.Add(new DateTime(2012, 12, 31));
+                eMonth.Add(new DateTime(2013, 01, 31));
+                eMonth.Add(new DateTime(2013, 02, 28));
+                eMonth.Add(new DateTime(2013, 03, 31));
+                eMonth.Add(new DateTime(2013, 04, 30));
+                eMonth.Add(new DateTime(2013, 05, 31));
+                eMonth.Add(new DateTime(2013, 06, 30));
+                eMonth.Add(new DateTime(2013, 07, 31));
+                eMonth.Add(new DateTime(2013, 08, 31));
+                eMonth.Add(new DateTime(2013, 09, 30));
+                eMonth.Add(new DateTime(2013, 10, 31));
+                eMonth.Add(new DateTime(2013, 11, 30));
+                eMonth.Add(new DateTime(2013, 12, 31));
+                eMonth.Add(new DateTime(2014, 01, 31));
+                eMonth.Add(new DateTime(2014, 02, 28));
+                eMonth.Add(new DateTime(2014, 03, 31));
+                eMonth.Add(new DateTime(2014, 04, 30));
+                eMonth.Add(new DateTime(2014, 05, 31));
+                eMonth.Add(new DateTime(2014, 06, 30));
+                eMonth.Add(new DateTime(2014, 07, 31));
+                eMonth.Add(new DateTime(2014, 08, 31));
+                eMonth.Add(new DateTime(2014, 09, 30));
+                eMonth.Add(new DateTime(2014, 10, 31));
+                eMonth.Add(new DateTime(2014, 11, 30));
+                eMonth.Add(new DateTime(2014, 12, 31));
+                eMonth.Add(new DateTime(2015, 01, 31));
+                eMonth.Add(new DateTime(2015, 02, 28));
+                eMonth.Add(new DateTime(2015, 03, 31));
+                eMonth.Add(new DateTime(2015, 04, 30));
+                eMonth.Add(new DateTime(2015, 05, 31));
+                eMonth.Add(new DateTime(2015, 06, 30));
+                eMonth.Add(new DateTime(2015, 07, 31));
+                eMonth.Add(new DateTime(2015, 08, 31));
+                eMonth.Add(new DateTime(2015, 09, 30));
+                eMonth.Add(new DateTime(2015, 10, 31));
+                eMonth.Add(new DateTime(2015, 11, 30));
+                eMonth.Add(new DateTime(2015, 12, 31));
+                eMonth.Add(new DateTime(2016, 01, 31));
+                eMonth.Add(new DateTime(2016, 02, 29));
+                eMonth.Add(new DateTime(2016, 03, 31));
+                eMonth.Add(new DateTime(2016, 04, 30));
                 /*eMonth.Add(new DateTime(2015,12,31));
                 eMonth.Add(new DateTime(2016, 01, 31));
                 eMonth.Add(new DateTime(2016, 02, 29));
                 eMonth.Add(new DateTime(2016, 03, 31));
                 eMonth.Add(new DateTime(2016, 04, 30));*/
-                eMonth.Add(new DateTime(2016, 05, 31));
+                eMonth.Add(new DateTime(2016, 05, 31)); //------------Old
                 eMonth.Add(new DateTime(2016, 06, 30));
                 eMonth.Add(new DateTime(2016, 07, 31));
                 eMonth.Add(new DateTime(2016, 08, 31));
@@ -198,13 +316,10 @@ namespace WebAPI03Application
                 eMonth.Add(new DateTime(2018, 11, 30));
                 eMonth.Add(new DateTime(2018, 12, 28));
 
-                double sd = 0;
-                double ret = 0;
                 List<double> retList = new List<double>();
 
                 List<string> _port = new List<string>();
                 int i = 0;
-                int j = 0;
                 double yr;
                 double pow;
                 
@@ -214,20 +329,6 @@ namespace WebAPI03Application
                     tmp_weight[0, i] = item.Weight/100;
                     i++;
                 }
-                
-                //wpc.STATUS = tmp[0, 0].ToString() + "__" + _port[0];
-                //return wpc;
-
-                /*
-                Matrix<double> B = DenseMatrix.OfArray(new double[,] {
-                     { 20.0, 20.0, 20.0, 20.0, 20.0 }
-                });
-                */
-
-                /*
-                conn.ConnectionString = myConnectionString;
-                conn.Open();
-                */
 
                 string myConnectionString = ConfigurationManager.ConnectionStrings["localDB"].ConnectionString; ;
                 conn = new OleDbConnection(myConnectionString);
@@ -252,9 +353,13 @@ namespace WebAPI03Application
                 }
                 mySQLReader.Close();
                 //-------------Return
-
+                /* 
                 iDt = new DateTime(2015, 12, 01);
                 sDt = new DateTime(2016, 05, 31);
+                eDt = new DateTime(2018, 12, 28);
+               */
+                iDt = new DateTime(2005, 12, 01);
+                sDt = new DateTime(2005, 12, 31);
                 eDt = new DateTime(2018, 12, 28);
 
                 command.CommandType = CommandType.StoredProcedure;
@@ -263,7 +368,6 @@ namespace WebAPI03Application
                 command.Parameters.AddWithValue("@port", string.Join(",", _port));
                 mySQLReader = command.ExecuteReader();
 
-                j = 0;
                 string test = "";
                 while (mySQLReader.Read())
                 {
@@ -290,7 +394,6 @@ namespace WebAPI03Application
                             tmp += (mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode))* tmp_weight[0, i] / 100);
 
                             i++;
-                            //A[0, i] = (mySQLReader.GetValue(mySQLReader.GetOrdinal(item.PortCode)).Equals(DBNull.Value) ? 0 : mySQLReader.GetDouble(mySQLReader.GetOrdinal(item.PortCode)) + 1) * tmp[0, i];
                         }
                         multi_asset = multi_asset * (1 + tmp);
                         i = 0;
@@ -298,7 +401,6 @@ namespace WebAPI03Application
                         foreach (var item in cweight.OrderBy(t => t.PortCode))
                         {
                             div += tmp_weight[0, i] * tmp_index[0, i] / tmp_index_old[0, i];
-                            //tmp_weight[0, i] =
                             i++;
                         }
 
@@ -323,7 +425,8 @@ namespace WebAPI03Application
                         //--------------------------------- SD
                         if (eMonth.Contains(mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE"))))
                         {
-                            if (!mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(new DateTime(2016, 05, 31))) {
+                            //if (!mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(new DateTime(2016, 05, 31))) {
+                                if (!mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(new DateTime(2005, 12, 31))) {
                                 retList.Add((multi_asset / monthly_multi_asset) - 1);
 
                                 //wpc.STATUS += ((multi_asset / monthly_multi_asset) - 1).ToString() + "__";
@@ -344,17 +447,17 @@ namespace WebAPI03Application
                     if (mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(sDt))
                     {
                         multi_asset_start = multi_asset;
+
+                        test += multi_asset + "__";
                     }
                     if (mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(eDt))
                     {
                         multi_asset_end = multi_asset;
+                        test += multi_asset + "__";
                     }
                     //wpc.STATUS += multi_asset + "__";
                 }   // end while
                 mySQLReader.Close();
-
-                //wpc.STATUS = tt.ToString();
-                //wpc.RET = (multi_asset_end / multi_asset_start);
 
                 yr = eDt.Subtract(sDt).TotalDays;// / 365;
                 pow = 365.25 / yr;
@@ -366,6 +469,7 @@ namespace WebAPI03Application
                 var statistics = new DescriptiveStatistics(retList);
                 wpc.SD = statistics.StandardDeviation* Math.Sqrt(12);
                 wpc.STATUS = "Success";
+                //wpc.STATUS = test;
 
                 WealthPCustomizeArray.Add(wpc);
 
