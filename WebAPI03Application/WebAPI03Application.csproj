@@ -105,12 +105,14 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\WealthPCustomizeController.cs" />
     <Compile Include="Controllers\WealthPCustomize2Controller.cs" />
+    <Compile Include="Controllers\WealthPCustomizeTestController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="MessageHandlers\APIKeyMessageHandler.cs" />
     <Compile Include="Models\WealthPCustomize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WealthPCustomizePersistanceTest.cs" />
     <Compile Include="WealthPCustomizePersistance2.cs" />
     <Compile Include="WealthPCustomizePersistance.cs" />
   </ItemGroup>
@@ -121,6 +123,7 @@
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\bblamapiwealthpcustomize - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\bblamapiwealthpcustomize - Web Deploy1.pubxml" />
+    <None Include="Properties\PublishProfiles\bblamapiwealthpcustomize - Web Deploy2.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -25,7 +25,8 @@ using System.Net;
 
 namespace WebAPI03Application
 {
-    public class WealthPCustomizePersistance2
+    // เอามาจาก WealthPCustomizePersistance2  แต่ไม่ให้ประมวลผล  แค่ดึงจาก DB พอ
+    public class WealthPCustomizePersistanceTest
     {
         public static double GetStandardDev(List<double> list)
         {
@@ -67,7 +68,8 @@ namespace WebAPI03Application
                 WealthPCustomize wpc = new WealthPCustomize();
 
                 //List<string> check_port = new List<string>(new string[] { "BFIXED", "BKA", "BKA2", "PREIT&IFF", "B-GLOBAL", "BGOLD", "B-TREASURY", "B-TNTV", "BKD", "BCAP", "BBASIC", "B-INFRA", "BTK", "BTP", "B-ASEAN", "B-HY (H75) AI", "B-HY (UH) AI", "B-NIPPON", "B-BHARATA", "B-ASIA", "BCARE", "B-INNOTECH" });--"B-FUTURE","B-CHINE-EQ","BSIRICG"
-                List<string> check_port = new List<string>(new string[] { "BFIXED", "BKA", "REIT", "PREIT&IFF", "B-GLOBAL", "BGOLD", "B-ASIA", "BCARE", "B-INNOTECH", "B-BHARATA", "B-TREASURY", "B-TNTV", "BCAP", "BBASIC", "BKA2", "B-INFRA", "BTK", "BTP", "B-ASEAN", "B-FUTURE", "B-CHINE-EQ", "BSIRICG", "BKD", "BKIND", "B-THAICG", "B-HY (H75) AI", "B-HY (UH) AI", "B-NIPPON" });
+                //List<string> check_port = new List<string>(new string[] { "BFIXED", "BKA", "REIT", "PREIT&IFF", "B-GLOBAL", "BGOLD", "B-ASIA", "BCARE", "B-INNOTECH", "B-BHARATA", "B-TREASURY", "B-TNTV", "BCAP", "BBASIC", "BKA2", "B-INFRA", "BTK", "BTP", "B-ASEAN", "B-FUTURE", "B-CHINE-EQ", "BSIRICG" });
+                List<string> check_port = new List<string>(new string[] { "BFIXED", "BKA", "REIT", "PREIT&IFF", "B-GLOBAL", "BGOLD", "B-ASIA", "BCARE", "B-INNOTECH", "B-BHARATA", "B-TREASURY", "B-TNTV", "BCAP", "BBASIC", "BKA2", "B-INFRA", "BTK", "BTP", "B-ASEAN", "B-FUTURE", "B-CHINE-EQ", "BSIRICG", "BKD", "BKIND", "B-THAICG", "B-HY (H75) AI", "B-HY (UH) AI", "B-NIPPON", "B-IR-FOF" });
 
                 if (cweight.Count() == 0)
                 {
@@ -112,15 +114,6 @@ namespace WebAPI03Application
 
                     return wpc;
                 }
-
-                wpc.RET = null;
-                wpc.SD = null;
-                wpc.STATUS = "Error : Service under maintenance.";
-                //wpc.XX = cweight.Count().ToString() + "_00_" + cweight.Length.ToString();
-
-                WealthPCustomizeArray.Add(wpc);
-
-                return wpc;
 
                 /*
                 foreach (var item in cweight.OrderBy(t => t.PortCode))
@@ -371,7 +364,8 @@ namespace WebAPI03Application
 
                 while (mySQLReader.Read())
                 {
-                    rbDateArray.Add(mySQLReader.GetDateTime(mySQLReader.GetOrdinal("RBDATE")).ToString("yyy-MM-dd", CultureInfo.CreateSpecificCulture("en-US")));
+                    //rbDateArray.Add(mySQLReader.GetDateTime(mySQLReader.GetOrdinal("RBDATE")).ToString("yyy-MM-dd", CultureInfo.CreateSpecificCulture("en-US")));
+                    rbDateArray.Add(mySQLReader.GetDateTime(mySQLReader.GetOrdinal("RBDATE")));
                 }
                 mySQLReader.Close();
                 //-------------Return
@@ -385,16 +379,23 @@ namespace WebAPI03Application
                 //eDt = new DateTime(2018, 12, 28);
                 eDt = new DateTime(2019, 12, 30);
 
+
                 command.CommandType = CommandType.StoredProcedure;
                 command.CommandText = "SP_WealthPCustomizeData";
                 command.Parameters.Clear();
                 command.Parameters.AddWithValue("@port", string.Join(",", _port));
                 mySQLReader = command.ExecuteReader();
-
+                /*
+                while (mySQLReader.Read()) { }
+                mySQLReader.Close();
+                return wpc;
+                */
                 string test = "";
+                DateTime vDate = new DateTime();
                 while (mySQLReader.Read())
                 {
-                    if (mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(iDt))   //  if init
+                    vDate = mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE"));
+                    if (vDate.Equals(iDt))   //  if init
                     {
                         multi_asset = 100;
                         i = 0;
@@ -436,7 +437,7 @@ namespace WebAPI03Application
                             i++;
                         }
 
-                        if (rbDateArray.Contains(mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).ToString("yyy-MM-dd", CultureInfo.CreateSpecificCulture("en-US"))))
+                        if (rbDateArray.Contains(vDate))
                         {
                             i = 0;
                             foreach (var item in cweight.OrderBy(t => t.PortCode))
@@ -446,10 +447,10 @@ namespace WebAPI03Application
                             }
                         }
                         //--------------------------------- SD
-                        if (eMonth.Contains(mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE"))))
+                        if (eMonth.Contains(vDate))
                         {
                             //if (!mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(new DateTime(2016, 05, 31))) {
-                                if (!mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(new DateTime(2005, 12, 31))) {
+                            if (!vDate.Equals(new DateTime(2005, 12, 31))) {
                                 retList.Add((multi_asset / monthly_multi_asset) - 1);
 
                                 //wpc.STATUS += ((multi_asset / monthly_multi_asset) - 1).ToString() + "__";
@@ -458,25 +459,25 @@ namespace WebAPI03Application
                         }
                         //--------------------------------- /SD
 
-                            /*
-                            if (mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(new DateTime(2016, 06, 03)))
-                            {
-                                //wpc.STATUS += multi_asset + "__" + tmp_weight[0, 1].ToString();
-                                wpc.STATUS = tmp_index[0, 0].ToString() + "__" + tmp_index[0, 1].ToString() + "__" + tmp_index[0, 2].ToString() + "__" + tmp_index[0, 3].ToString() + "__" + multi_asset.ToString() + "__" + tmp_weight[0, 0] + "__" + tmp_weight[0, 1] + "__" + tmp_weight[0, 2] + "__" + tmp_weight[0, 3];
-                            }
-                            */
+                        /*
+                        if (mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(new DateTime(2016, 06, 03)))
+                        {
+                            //wpc.STATUS += multi_asset + "__" + tmp_weight[0, 1].ToString();
+                            wpc.STATUS = tmp_index[0, 0].ToString() + "__" + tmp_index[0, 1].ToString() + "__" + tmp_index[0, 2].ToString() + "__" + tmp_index[0, 3].ToString() + "__" + multi_asset.ToString() + "__" + tmp_weight[0, 0] + "__" + tmp_weight[0, 1] + "__" + tmp_weight[0, 2] + "__" + tmp_weight[0, 3];
+                        }
+                        */
                     }   //  end if init
 
-                    if (mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(sDt))
+                    if (vDate.Equals(sDt))
                     {
                         multi_asset_start = multi_asset;
 
-                        test += multi_asset + "__";
+                        //test += multi_asset + "__";
                     }
-                    if (mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(eDt))
+                    if (vDate.Equals(eDt))
                     {
                         multi_asset_end = multi_asset;
-                        test += multi_asset + "__";
+                        //test += multi_asset + "__";
                     }
                     //wpc.STATUS += multi_asset + "__";
                 }   // end while
@@ -516,4 +517,3 @@ namespace WebAPI03Application
         }
     }
 }
- 

@@ -23,7 +23,15 @@ namespace WebAPI03Application
                 name: "WealthPCustomize",
                 //routeTemplate: "api/WealthPCustomize/{id}",
                 routeTemplate: "api/WealthPCustomize",
-                defaults: new { controller = "WealthPCustomize2", id = RouteParameter.Optional }//,
+                defaults: new { controller = "WealthPCustomizeTest", id = RouteParameter.Optional }
+                //defaults: new { controller = "WealthPCustomize2", id = RouteParameter.Optional }//,
+                //constraints: new { id="length(2)"}
+            );
+            config.Routes.MapHttpRoute(
+                name: "WealthPCustomizeTest",
+                //routeTemplate: "api/WealthPCustomize/{id}",
+                routeTemplate: "api/WealthPCustomizeTest",
+                defaults: new { controller = "WealthPCustomizeTest", id = RouteParameter.Optional }//,
                 //constraints: new { id="length(2)"}
             );
             /*
