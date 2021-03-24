@@ -156,7 +156,7 @@ namespace WebAPI03Application
 
                 //  วันทำการสิ้นเดือน  เพื่อหา monthly return
                 List<DateTime> eMonth = new List<DateTime>();
-                eMonth.Add(new DateTime(2005, 12, 31));
+                /*eMonth.Add(new DateTime(2005, 12, 31));
                 eMonth.Add(new DateTime(2006, 01, 31));
                 eMonth.Add(new DateTime(2006, 02, 28));
                 eMonth.Add(new DateTime(2006, 03, 31));
@@ -167,7 +167,8 @@ namespace WebAPI03Application
                 eMonth.Add(new DateTime(2006, 08, 31));
                 eMonth.Add(new DateTime(2006, 09, 30));
                 eMonth.Add(new DateTime(2006, 10, 31));
-                eMonth.Add(new DateTime(2006, 11, 30));
+                eMonth.Add(new DateTime(2006, 11, 30));*/
+                /*
                 eMonth.Add(new DateTime(2006, 12, 31));
                 eMonth.Add(new DateTime(2007, 01, 31));
                 eMonth.Add(new DateTime(2007, 02, 28));
@@ -216,6 +217,7 @@ namespace WebAPI03Application
                 eMonth.Add(new DateTime(2010, 09, 30));
                 eMonth.Add(new DateTime(2010, 10, 31));
                 eMonth.Add(new DateTime(2010, 11, 30));
+                */
                 eMonth.Add(new DateTime(2010, 12, 31));
                 eMonth.Add(new DateTime(2011, 01, 31));
                 eMonth.Add(new DateTime(2011, 02, 28));
@@ -330,6 +332,18 @@ namespace WebAPI03Application
                 eMonth.Add(new DateTime(2019, 10, 31));
                 eMonth.Add(new DateTime(2019, 11, 30));
                 eMonth.Add(new DateTime(2019, 12, 30));
+                eMonth.Add(new DateTime(2020, 01, 31));
+                eMonth.Add(new DateTime(2020, 02, 29));
+                eMonth.Add(new DateTime(2020, 03, 31));
+                eMonth.Add(new DateTime(2020, 04, 30));
+                eMonth.Add(new DateTime(2020, 05, 31));
+                eMonth.Add(new DateTime(2020, 06, 30));
+                eMonth.Add(new DateTime(2020, 07, 31));
+                eMonth.Add(new DateTime(2020, 08, 31));
+                eMonth.Add(new DateTime(2020, 09, 30));
+                eMonth.Add(new DateTime(2020, 10, 31));
+                eMonth.Add(new DateTime(2020, 11, 30));
+                eMonth.Add(new DateTime(2020, 12, 30));
 
                 List<double> retList = new List<double>();
 
@@ -374,10 +388,23 @@ namespace WebAPI03Application
                 sDt = new DateTime(2016, 05, 31);
                 eDt = new DateTime(2018, 12, 28);
                */
+                /*
                 iDt = new DateTime(2005, 12, 01);
                 sDt = new DateTime(2005, 12, 31);
+                */
+                /*
+                iDt = new DateTime(2006, 12, 01);
+                sDt = new DateTime(2006, 12, 31);
+                */
+                /*
+                iDt = new DateTime(2010, 12, 01);
+                sDt = new DateTime(2010, 12, 31);
+                */
+                iDt = new DateTime(2010, 12, 01);
+                sDt = new DateTime(2010, 12, 31);
                 //eDt = new DateTime(2018, 12, 28);
-                eDt = new DateTime(2019, 12, 30);
+                //eDt = new DateTime(2019, 12, 30);
+                eDt = new DateTime(2020, 12, 30);
 
 
                 command.CommandType = CommandType.StoredProcedure;
@@ -450,7 +477,10 @@ namespace WebAPI03Application
                         if (eMonth.Contains(vDate))
                         {
                             //if (!mySQLReader.GetDateTime(mySQLReader.GetOrdinal("VDATE")).Equals(new DateTime(2016, 05, 31))) {
-                            if (!vDate.Equals(new DateTime(2005, 12, 31))) {
+                            //if (!vDate.Equals(new DateTime(2005, 12, 31))) {
+                            //if (!vDate.Equals(new DateTime(2006, 12, 31)))
+                            if (!vDate.Equals(new DateTime(2010, 12, 31)))
+                            {
                                 retList.Add((multi_asset / monthly_multi_asset) - 1);
 
                                 //wpc.STATUS += ((multi_asset / monthly_multi_asset) - 1).ToString() + "__";
